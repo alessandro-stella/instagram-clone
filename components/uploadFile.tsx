@@ -32,8 +32,9 @@ export default function UploadFile({ onChange, files }: UploadFileProps) {
                             <div>Images:</div>
                             <div>
                                 {files.length > 0 &&
-                                    files.map((url) => (
+                                    files.map((url, index) => (
                                         <Image
+                                            key={index}
                                             alt="Upload"
                                             height={200}
                                             width={200}

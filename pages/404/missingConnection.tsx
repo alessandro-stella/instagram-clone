@@ -18,7 +18,7 @@ export default function Page404() {
         };
 
         checkConnection();
-    }, []);
+    }, [push]);
 
     return <div className="text-4xl">NOT CONNECTED!</div>;
 }
