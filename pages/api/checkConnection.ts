@@ -1,4 +1,4 @@
-import dbConnection from "@/database/dbConnection";
+import {dbConnection} from "@/database/dbConnection";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Response = {

@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next";
-import dbConnection from "@/database/dbConnection";
+import { dbConnection } from "@/database/dbConnection";
 import { signIn } from "next-auth/react";
 
 export default function Home() {
@@ -8,7 +8,7 @@ export default function Home() {
             <div>Import image</div>
             <div
                 className="p-2 m-2 border-2 border-white hover:bg-white hover:text-black transition-all w-fit hover:cursor-pointer"
-                onClick={() => signIn(undefined, { callbackUrl: '/' })}>
+                onClick={() => signIn(undefined, { callbackUrl: "/" })}>
                 Sign in
             </div>
         </div>

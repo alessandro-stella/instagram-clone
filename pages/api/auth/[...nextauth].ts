@@ -1,7 +1,8 @@
-import dbConnection from "@/database/dbConnection";
+import { dbConnection } from "@/database/dbConnection";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import url from "@/url";
+import User from "@/database/models/userModel";
 
 export default NextAuth({
     providers: [
@@ -12,31 +13,34 @@ export default NextAuth({
                 password: { label: "Password", type: "password" },
             },
             async authorize(credentials, req) {
+                const isConnected: boolean = await dbConnection();
+
+                if (!isConnected) {
+                    throw new Error("We couldn't reach the database");
+                }
+
                 const { email, password } = credentials as {
                     email: string;
                     password: string;
                 };
 
-                const res = await fetch(`${url}/api/findUser`, {
-                    method: "POST",
-                    body: JSON.stringify(credentials),
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
+                const user = await User.findOne({ email }).select("+password");
 
-                const user = await res.json();
-                console.log({ user });
-
-                if (user.notConnected) {
-                    throw new Error("We couldn't connect to the database");
+                if (!user) {
+                    throw new Error(
+                        "There are no users registered with this email"
+                    );
                 }
 
-                if (user) {
-                    return user;
+                const passwordIsCorrect: boolean = await user.validatePassword(
+                    password
+                );
+
+                if (!passwordIsCorrect) {
+                    throw new Error("Invalid password");
                 }
 
-                return null;
+                return user;
             },
         }),
     ],

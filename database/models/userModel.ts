@@ -14,18 +14,28 @@ const userSchema = new Schema(
     {
         username: {
             type: String,
-            required: true,
+            required: [true, "Username is required"],
+            match: [/^[a-zA-Z0-9_.]+$/, "Invalid username"],
+            maxLength: [30, "Username can be up to 30 characters long"],
         },
         email: {
             type: String,
-            required: true,
-            index: { unique: true },
+            unique: true,
+            required: [true, "Email is required"],
+            match: [
+                /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+                "Invalid email address",
+            ],
         },
         password: {
             type: String,
-            required: true,
+            required: [true, "Password is required"],
+            select: false,
         },
-
+        bio: {
+            type: String,
+            default: "",
+        },
         followed: {
             type: Array,
             default: [],
