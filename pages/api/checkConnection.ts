@@ -9,7 +9,7 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<Response>
 ) {
-    let isConnected: boolean = await dbConnection();
+    const isConnected: boolean = await dbConnection();
 
-    res.status(isConnected ? 200 : 500).json({ isConnected });
+    return res.status(isConnected ? 200 : 500).json({ isConnected });
 }

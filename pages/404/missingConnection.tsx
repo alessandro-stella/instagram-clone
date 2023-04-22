@@ -6,7 +6,7 @@ export default function Page404() {
 
     useEffect(() => {
         const checkConnection = async () => {
-            let isConnected: boolean = await fetch("/api/checkConnection")
+            const isConnected: boolean = await fetch("/api/checkConnection")
                 .then((res) => res.json())
                 .then((res) => res.isConnected);
 

@@ -1,18 +1,19 @@
 import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-interface UploadFileProps {
-    onChange: (value: string) => void;
-    files: string[];
-}
+export default function UploadFile() {
+    const [dataUrl, setDataUrl] = useState<string[]>([]);
 
-export default function UploadFile({ onChange, files }: UploadFileProps) {
+    useEffect(() => {
+        console.log(dataUrl);
+    }, [dataUrl]);
+
     const handleUpload = useCallback(
         (result: any) => {
-            onChange(result.info.secure_url);
+            setDataUrl([...dataUrl, result.info.secure_url]);
         },
-        [onChange]
+        [setDataUrl]
     );
 
     return (
@@ -31,8 +32,8 @@ export default function UploadFile({ onChange, files }: UploadFileProps) {
                         <div>
                             <div>Images:</div>
                             <div>
-                                {files.length > 0 &&
-                                    files.map((url, index) => (
+                                {dataUrl.length > 0 &&
+                                    dataUrl.map((url, index) => (
                                         <Image
                                             key={index}
                                             alt="Upload"

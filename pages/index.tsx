@@ -1,30 +1,22 @@
 import { GetServerSideProps } from "next";
 import dbConnection from "@/database/dbConnection";
-import UploadFile from "@/components/uploadFile";
-import { useEffect, useState } from "react";
+import { signIn } from "next-auth/react";
 
 export default function Home() {
-    const [dataUrl, setDataUrl] = useState<string[]>([]);
-
-    useEffect(() => {
-        console.log(dataUrl);
-    }, [dataUrl]);
-
     return (
         <div>
             <div>Import image</div>
-            <UploadFile
-                files={dataUrl}
-                onChange={(value: string) => {
-                    setDataUrl([...dataUrl, value]);
-                }}
-            />
+            <div
+                className="p-2 m-2 border-2 border-white hover:bg-white hover:text-black transition-all w-fit hover:cursor-pointer"
+                onClick={() => signIn(undefined, { callbackUrl: '/' })}>
+                Sign in
+            </div>
         </div>
     );
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    let isConnected: boolean = await dbConnection();
+    const isConnected: boolean = await dbConnection();
 
     if (!isConnected)
         return {
