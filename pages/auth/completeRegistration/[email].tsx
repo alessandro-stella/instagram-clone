@@ -13,9 +13,9 @@ export default function CompleteRegistration() {
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-
     useEffect(() => {
+        const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+
         if (!email) return;
 
         if (!email.match(emailRegex)) {
@@ -37,7 +37,7 @@ export default function CompleteRegistration() {
 
         checkIfRegistered();
         setIsLoading(false);
-    }, [email]);
+    }, [email, router]);
 
     const handleConfirm = async () => {
         setIsLoading(true);

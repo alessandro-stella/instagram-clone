@@ -10,7 +10,7 @@ export default function Login() {
 
     useEffect(() => {
         if (user) router.push("/");
-    }, [user]);
+    }, [user, router]);
 
     const [email, setEmail] = useState<string>(
         "alessandro.stella2004@gmail.com"

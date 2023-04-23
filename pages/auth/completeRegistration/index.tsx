@@ -6,7 +6,7 @@ export default function CompleteRegistration() {
 
     useEffect(() => {
         router.push("/auth/login");
-    }, []);
+    }, [router]);
 
     return;
 }

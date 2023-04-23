@@ -13,7 +13,7 @@ export default function UploadFile() {
         (result: any) => {
             setDataUrl([...dataUrl, result.info.secure_url]);
         },
-        [setDataUrl]
+        [dataUrl, setDataUrl]
     );
 
     return (
