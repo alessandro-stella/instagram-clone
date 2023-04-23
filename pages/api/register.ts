@@ -21,11 +21,13 @@ export default async function register(
 
     if (!req.body) return res.status(400).json({ error: "Data is missing" });
 
-    const { username, email, password } = req.body as {
+    const { username, email, password } = JSON.parse(req.body) as {
         username: string;
         email: string;
         password: string;
     };
+
+    console.log({ username, email, password });
 
     if (!username || !email || !password)
         return res.status(400).json({ error: "Data is missing" });
@@ -51,5 +53,5 @@ export default async function register(
                 .json({ error: createResponse.error[field].message });
         }
 
-    return res.status(200).json({ id: createResponse._id });
+    return res.status(200).json({ success: true });
 }

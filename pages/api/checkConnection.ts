@@ -1,13 +1,9 @@
-import {dbConnection} from "@/database/dbConnection";
+import { dbConnection } from "@/database/dbConnection";
 import type { NextApiRequest, NextApiResponse } from "next";
-
-type Response = {
-    isConnected: boolean;
-};
 
 export default async function handler(
     req: NextApiRequest,
-    res: NextApiResponse<Response>
+    res: NextApiResponse<{ isConnected: boolean }>
 ) {
     const isConnected: boolean = await dbConnection();
 
