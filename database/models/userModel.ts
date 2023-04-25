@@ -1,6 +1,7 @@
 import { Schema, models, model } from "mongoose";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+import { emailRegex, usernameRegex } from "@/utils/regex";
 const SALT_WORK_FACTOR = 16;
 
 export interface userType {
@@ -16,7 +17,7 @@ const userSchema = new Schema(
         username: {
             type: String,
             required: [true, "Username is required"],
-            match: [/^[a-zA-Z0-9_.]+$/, "Invalid username"],
+            match: [usernameRegex, "Invalid username"],
             maxLength: [30, "Username can be up to 30 characters long"],
         },
         email: {
@@ -24,7 +25,7 @@ const userSchema = new Schema(
             unique: true,
             required: [true, "Email is required"],
             match: [
-                /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+                emailRegex,
                 "Invalid email address",
             ],
         },

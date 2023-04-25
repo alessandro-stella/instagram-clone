@@ -1,11 +1,9 @@
 import { dbConnection } from "@/database/dbConnection";
 import TempUser from "@/database/models/tempUserModel";
 import User from "@/database/models/userModel";
+import { passwordRegex } from "@/utils/regex";
 import sendVerificationEmail from "@/utils/sendVerificationEmail";
 import { NextApiRequest, NextApiResponse } from "next";
-
-const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!\"#$%&'()*+,-.\/:;<=>?@\[\]\\^_`{|}~])[A-Za-z\d!\"#$%&'()*+,-.\/:;<=>?@\[\]\\^_`{|}~\s]{8,}$/;
 
 export default async function register(
     req: NextApiRequest,

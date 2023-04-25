@@ -2,7 +2,7 @@ import { dbConnection } from "@/database/dbConnection";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import url from "@/url";
+import url from "@/utils/url";
 import User from "@/database/models/userModel";
 import TempUser from "@/database/models/tempUserModel";
 

@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import localFont from "next/font/local";
+import Head from "next/head";
 
 const Segoe = localFont({
     src: [
@@ -31,6 +32,15 @@ const Segoe = localFont({
 export default function App({ Component, pageProps }: AppProps) {
     return (
         <SessionProvider session={pageProps.session}>
+            <Head>
+                <link rel="icon" href="/favicon.ico?v=1" type="image/x-icon" />
+                <link
+                    rel="shortcut icon"
+                    href="/favicon.ico?v=1"
+                    type="image/x-icon"
+                />
+                <title>Instagram</title>
+            </Head>
             <main className={Segoe.className}>
                 <Component {...pageProps} />
             </main>

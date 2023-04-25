@@ -1,4 +1,4 @@
-import url from "@/url";
+import url from "@/utils/url";
 import * as sgMail from "@sendgrid/mail";
 
 const { SENDGRID_KEY, FROM_EMAIL } = process.env;

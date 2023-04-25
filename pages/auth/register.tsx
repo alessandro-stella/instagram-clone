@@ -5,6 +5,10 @@ import { useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
 import { AiOutlineGoogle } from "react-icons/ai";
+import useTimeout from "@/utils/useTimeout";
+import { usernameRegex } from "@/utils/regex";
+import { emailRegex } from "@/utils/regex";
+import { passwordRegex } from "@/utils/regex";
 
 export default function Login() {
     const router = useRouter();
@@ -25,7 +29,68 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
+    const [error, setError] = useState<string>("");
+
+    const timeoutRef = useTimeout(
+        () => {
+            setError("");
+        },
+        error == "" ? null : 5000
+    );
+
+    function valuesAreValid(): boolean {
+        window.clearTimeout(timeoutRef.current);
+
+        if (
+            !username ||
+            !email ||
+            !confirmEmail ||
+            !password ||
+            !confirmPassword
+        ) {
+            setError("Some of the fields have not been filled in");
+            return false;
+        }
+
+        if (!username.match(usernameRegex)) {
+            setError(
+                "Username does not match the allowed format: maximum length of 30 characters, only underscores and periods allowed as special characters"
+            );
+            return false;
+        }
+
+        if (email !== confirmEmail) {
+            setError("The emails entered do not match");
+            return false;
+        }
+
+        if (!email.match(emailRegex)) {
+            setError("The email does not match the allowed format");
+            return false;
+        }
+
+        if (password !== confirmPassword) {
+            setError("The passwords entered do not match");
+            return false;
+        }
+
+        if (!password.match(passwordRegex)) {
+            setError(
+                "The password does not match the allowed format: minimum length of 8 characters, it has to include at least 1 lowercase letter, 1 uppercase letter, 1 number and 1 special character"
+            );
+            return false;
+        }
+
+        return true;
+    }
+
     const register = async () => {
+        setError("");
+
+        if (!valuesAreValid()) {
+            return;
+        }
+
         setIsLoading(true);
 
         const res = await fetch("/api/register", {
@@ -37,25 +102,35 @@ export default function Login() {
             }),
         }).then((res) => res.json());
 
-        if (res && res.success) {
-            router.push("/");
+        console.log({ res });
+
+        if (res) {
+            if (res.ok) {
+                router.push("/");
+
+                return;
+            }
+
+            if (res.error) {
+                setError(res.error);
+            }
         }
 
         setIsLoading(false);
     };
 
     return (
-        <div className="flex min-h-screen py-20 bg-violet-300">
-            <div className="justify-end flex-1 hidden bg-green-200 sm:flex">
-                <div className="w-[22rem] bg-sky-300 mr-4 ">IMAGES</div>
+        <div className="flex min-h-screen py-20 bg-violet-300 md:gap-6">
+            <div className="justify-end flex-1 hidden bg-green-200 md:flex">
+                <div className="w-[22rem] bg-sky-300">IMAGES</div>
             </div>
-            <div className="flex items-center flex-1 bg-red-300">
+            <div className="flex items-center flex-1 bg-red-300 justify-center md:justify-normal">
                 <div className="w-[22rem] bg-amber-200 border-[1px] border-slate-300 p-10 flex flex-col gap-2 items-center">
                     <div className="font-grandista text-[2.5rem] box-border">
                         Instagram
                     </div>
 
-                    <div className="text-lg text-slate-600 text-center my-2">
+                    <div className="my-2 text-lg text-center text-slate-600">
                         Welcome! Sign up to see what your friends are up to
                     </div>
 
@@ -89,6 +164,12 @@ export default function Login() {
                         setValue={setConfirmPassword}
                         label="Confirm password"
                     />
+
+                    {error ? (
+                        <div className="text-red-500 text-sm text-center">
+                            {error}
+                        </div>
+                    ) : null}
 
                     <button
                         className={`text-white  py-2 mt-2 text-bold w-full rounded-md ${
