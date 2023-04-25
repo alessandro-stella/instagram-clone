@@ -53,7 +53,7 @@ export default function VerifyAccount({
 
             return;
         }
-    }, []);
+    }, [success, error, invalidCode, alreadyVerified]);
 
     return (
         <div className="flex flex-col gap-2 p-4 m-8 bg-violet-500">

@@ -28,8 +28,8 @@ export default function Login() {
     );
 
     const login = async () => {
-        setIsLoading(true);
         setError("");
+        setIsLoading(true);
 
         const res = await signIn("credentials", {
             redirect: false,
@@ -38,8 +38,6 @@ export default function Login() {
         }).then((res) => {
             return res;
         });
-
-        console.log(res);
 
         if (res) {
             if (res.ok) {

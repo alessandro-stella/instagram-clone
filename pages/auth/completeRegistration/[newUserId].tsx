@@ -1,6 +1,8 @@
 import CustomTextInput from "@/components/customTextInput";
 import { dbConnection } from "@/database/dbConnection";
 import TempUser from "@/database/models/tempUserModel";
+import { passwordRegex, usernameRegex } from "@/utils/regex";
+import useTimeout from "@/utils/useTimeout";
 import { GetServerSideProps } from "next";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -18,9 +20,53 @@ export default function CompleteRegistration({ email, newUserId }: PageProps) {
     const [password, setPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");
 
+    const [error, setError] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
+    const timeoutRef = useTimeout(
+        () => {
+            setError("");
+        },
+        error == "" ? null : 5000
+    );
+
+    function valuesAreValid(): boolean {
+        window.clearTimeout(timeoutRef.current);
+
+        if (!username || !password || !confirmPassword) {
+            setError("Some of the fields have not been filled in");
+            return false;
+        }
+
+        if (!username.match(usernameRegex)) {
+            setError(
+                "Username does not match the allowed format: maximum length of 30 characters, only underscores and periods allowed as special characters"
+            );
+            return false;
+        }
+
+        if (password !== confirmPassword) {
+            setError("The passwords entered do not match");
+            return false;
+        }
+
+        if (!password.match(passwordRegex)) {
+            setError(
+                "The password does not match the allowed format: minimum length of 8 characters, it has to include at least 1 lowercase letter, 1 uppercase letter, 1 number and 1 special character"
+            );
+            return false;
+        }
+
+        return true;
+    }
+
     const handleConfirm = async () => {
+        setError("");
+
+        if (!valuesAreValid()) {
+            return;
+        }
+
         setIsLoading(true);
 
         const res = await fetch("/api/register", {
@@ -49,18 +95,21 @@ export default function CompleteRegistration({ email, newUserId }: PageProps) {
                     <div>Complete registration</div>
 
                     <CustomTextInput
+                        label="Username"
                         type="text"
                         value={username}
                         setValue={setUsername}
                     />
 
                     <CustomTextInput
+                        label="Password"
                         type="text"
                         value={password}
                         setValue={setPassword}
                     />
 
                     <CustomTextInput
+                        label="Confirm password"
                         type="text"
                         value={confirmPassword}
                         setValue={setConfirmPassword}
@@ -72,7 +121,7 @@ export default function CompleteRegistration({ email, newUserId }: PageProps) {
 
                     <div>
                         You have about 3 minutes to complete this step, or else
-                        you'll have to register again
+                        you&apos;ll have to register again
                     </div>
                 </div>
             ) : (
