@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-    background-color: antiquewhite;
+@font-face {
+    font-family: "Grandista";
+    src: url("./fonts/Grandista.otf");
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    text-rendering: optimizeSpeed;
+    line-height: 1.5;
 }
