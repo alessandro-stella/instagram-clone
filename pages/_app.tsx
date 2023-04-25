@@ -6,22 +6,22 @@ import localFont from "next/font/local";
 const Segoe = localFont({
     src: [
         {
-            path: "../fonts/Segoe UI.ttf",
+            path: "../styles/fonts/Segoe UI.ttf",
             weight: "400",
             style: "normal",
         },
         {
-            path: "../fonts/Segoe UI Italic.ttf",
+            path: "../styles/fonts/Segoe UI Italic.ttf",
             weight: "400",
             style: "italic",
         },
         {
-            path: "../fonts/Segoe UI Bold.ttf",
+            path: "../styles/fonts/Segoe UI Bold.ttf",
             weight: "700",
             style: "normal",
         },
         {
-            path: "../fonts/Segoe UI Bold Italic.ttf",
+            path: "../styles/fonts/Segoe UI Bold Italic.ttf",
             weight: "700",
             style: "italic",
         },

@@ -4,48 +4,40 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
-import useTimeout from "@/utils/useTimeout";
 
 export default function Login() {
     const router = useRouter();
 
+    const [username, setUsername] = useState<string>("alessandr.o_stella");
+
     const [email, setEmail] = useState<string>(
         "alessandro.stella2004@gmail.com"
     );
+    const [confirmEmail, setConfirmEmail] = useState<string>(
+        "alessandro.stella2004@gmail.com"
+    );
+
     const [password, setPassword] = useState<string>("Negro123@_");
+    const [confirmPassword, setConfirmPassword] =
+        useState<string>("Negro123@_");
 
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const [error, setError] = useState<string>("");
-
-    useTimeout(
-        () => {
-            setError("");
-        },
-        error == "" ? null : 3000
-    );
-
-    const login = async () => {
+    const register = async () => {
         setIsLoading(true);
-        setError("");
 
-        const res = await signIn("credentials", {
-            redirect: false,
-            email,
-            password,
-        });
+        const res = await fetch("/api/register", {
+            method: "POST",
+            body: JSON.stringify({
+                username,
+                email,
+                password,
+            }),
+        }).then((res) => res.json());
 
-        if (res) {
-            if (res.ok) {
-                router.push("/");
-
-                return;
-            }
-
-            if (res.error) {
-                setError(res.error);
-            }
+        if (res && res.success) {
+            router.push("/");
         }
 
         setIsLoading(false);
@@ -53,25 +45,41 @@ export default function Login() {
 
     return (
         <div className="flex flex-col w-1/2 gap-4 p-8 text-2xl">
-            <div>Login</div>
+            <div>Register</div>
+
+            <CustomTextInput
+                type="text"
+                value={username}
+                setValue={setUsername}
+            />
 
             <CustomTextInput type="text" value={email} setValue={setEmail} />
+            <CustomTextInput
+                type="text"
+                value={confirmEmail}
+                setValue={setConfirmEmail}
+            />
+
             <CustomTextInput
                 type="text"
                 value={password}
                 setValue={setPassword}
             />
+            <CustomTextInput
+                type="text"
+                value={confirmPassword}
+                setValue={setConfirmPassword}
+            />
 
-            <div className="text-red-500">{error}</div>
+            {isLoading ? (
+                <button disabled={true}>Loading...</button>
+            ) : (
+                <button onClick={register}>Register</button>
+            )}
 
-            <button
-                onClick={login}
-                disabled={isLoading}
-                className={`${isLoading ? "bg-slate-200" : "bg-slate-100"}`}>
-                {isLoading ? "Loading..." : "Login"}
+            <button onClick={() => signIn("google")}>
+                Register with Google
             </button>
-
-            <button onClick={() => signIn("google")}>Login with Google</button>
         </div>
     );
 }

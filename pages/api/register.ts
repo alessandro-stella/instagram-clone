@@ -1,5 +1,7 @@
 import { dbConnection } from "@/database/dbConnection";
+import TempUser from "@/database/models/tempUserModel";
 import User from "@/database/models/userModel";
+import sendVerificationEmail from "@/utils/sendVerificationEmail";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const passwordRegex =
@@ -21,13 +23,30 @@ export default async function register(
 
     if (!req.body) return res.status(400).json({ error: "Data is missing" });
 
-    const { username, email, password } = JSON.parse(req.body) as {
+    const { newUserId, username, email, password } = JSON.parse(req.body) as {
+        newUserId: string;
         username: string;
         email: string;
         password: string;
     };
 
-    console.log({ username, email, password });
+    if (newUserId) {
+        const registrationIsValid = await TempUser.findById(newUserId).catch(
+            (error) => ({ error })
+        );
+
+        if (!registrationIsValid || registrationIsValid.error)
+            return res
+                .status(401)
+                .json({ error: "Registration time is elapsed" });
+
+        const deleteResponse = await TempUser.deleteOne({
+            _id: newUserId,
+        });
+
+        if (!deleteResponse.acknowledged || deleteResponse.deletedCount != 1)
+            return res.status(500).json({ error: "Error during the process" });
+    }
 
     if (!username || !email || !password)
         return res.status(400).json({ error: "Data is missing" });
@@ -52,6 +71,14 @@ export default async function register(
                 .status(409)
                 .json({ error: createResponse.error[field].message });
         }
+
+    console.log({ createResponse });
+
+    await sendVerificationEmail(
+        username,
+        email,
+        createResponse.verificationCode
+    );
 
     return res.status(200).json({ success: true });
 }

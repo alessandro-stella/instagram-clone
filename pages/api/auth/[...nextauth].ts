@@ -4,6 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import url from "@/url";
 import User from "@/database/models/userModel";
+import TempUser from "@/database/models/tempUserModel";
 
 const GOOGLE_CLIENT_ID: string = process.env.GOOGLE_CLIENT_ID as string;
 const GOOGLE_CLIENT_SECRET: string = process.env.GOOGLE_CLIENT_SECRET as string;
@@ -74,8 +75,6 @@ export default NextAuth({
 
             if (isFromDb) {
                 session.user = user;
-
-                console.log(session);
                 return session;
             }
 
@@ -97,7 +96,6 @@ export default NextAuth({
             };
 
             session.user = user;
-            console.log(session);
             return session;
         },
         async signIn({ account, profile, email, credentials }) {
@@ -114,8 +112,16 @@ export default NextAuth({
                     email: profile.email,
                 });
 
-                if (!dbUser)
-                    return `${url}/auth/completeRegistration/${profile.email}`;
+                if (!dbUser) {
+                    const newTempUser = await TempUser.create({
+                        email: profile.email,
+                    }).catch((error) => ({ error }));
+
+                    if (newTempUser.error)
+                        throw new Error("We couldn't register the new user");
+
+                    return `${url}/auth/completeRegistration/${newTempUser._id}`;
+                }
 
                 return true;
             }

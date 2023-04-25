@@ -1,5 +1,6 @@
 import { Schema, models, model } from "mongoose";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 const SALT_WORK_FACTOR = 16;
 
 export interface userType {
@@ -44,9 +45,20 @@ const userSchema = new Schema(
             type: Array,
             default: [],
         },
+        verified: {
+            type: Boolean,
+            default: false,
+        },
+        verificationCode: {
+            type: String,
+            default: () => generateSafeRandomString(32),
+        },
     },
     { timestamps: true }
 );
+
+const generateSafeRandomString = (length: number) =>
+    crypto.randomBytes(length / 2).toString("hex");
 
 userSchema.pre("save", async function save(next) {
     if (!this.isModified("password")) return next();
