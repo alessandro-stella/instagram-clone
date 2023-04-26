@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, SetStateAction, useRef } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 
 interface InputParameters {
     type: string;
@@ -14,6 +14,7 @@ export default function CustomTextInput({
     setValue,
 }: InputParameters) {
     const inputRef = useRef<HTMLInputElement>(null);
+    const [isFocused, setIsFocused] = useState<boolean>(false);
 
     const handleClick = () => {
         if (inputRef.current) inputRef.current.focus();
@@ -25,10 +26,12 @@ export default function CustomTextInput({
 
     return (
         <div
-            className="w-full relative h-12 bg-white border-[1px] border-slate-300 hover:cursor-text rounded-md"
+            className={`w-full relative h-12 bg-white border-[1px] hover:cursor-text rounded-md transition-all ${
+                isFocused ? "border-slate-500" : "border-slate-300"
+            }`}
             onClick={handleClick}>
             <div
-                className={`w-full text-slate-400 absolute px-2 flex items-center pointer-events-none transition-all ${
+                className={`w-full absolute px-2 text-slate-300 flex items-center pointer-events-none transition-all ${
                     value != "" ? "h-1/2 text-xs" : "h-full text-base"
                 }`}>
                 {label}
@@ -42,6 +45,8 @@ export default function CustomTextInput({
                 type={type}
                 value={value}
                 onChange={(e) => handleChange(e)}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
             />
         </div>
     );

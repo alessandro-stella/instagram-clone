@@ -1,14 +1,12 @@
 import CustomTextInput from "@/components/customTextInput";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { getSession } from "next-auth/react";
-import { GetServerSideProps } from "next";
-import { AiOutlineGoogle } from "react-icons/ai";
+import HomeImageSlider from "@/components/homeImageSlider";
+import { emailRegex, passwordRegex, usernameRegex } from "@/utils/regex";
 import useTimeout from "@/utils/useTimeout";
-import { usernameRegex } from "@/utils/regex";
-import { emailRegex } from "@/utils/regex";
-import { passwordRegex } from "@/utils/regex";
+import { GetServerSideProps } from "next";
+import { getSession, signIn } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { AiOutlineGoogle } from "react-icons/ai";
 
 export default function Login() {
     const router = useRouter();
@@ -120,80 +118,76 @@ export default function Login() {
     };
 
     return (
-        <div className="flex min-h-screen py-20 bg-violet-300 md:gap-6">
+        <div className="flex h-screen py-36 bg-violet-300 gap-8">
             <div className="justify-end flex-1 hidden bg-green-200 md:flex">
-                <div className="w-[22rem] bg-sky-300">IMAGES</div>
+                <HomeImageSlider />
             </div>
             <div className="flex items-center flex-1 bg-red-300 justify-center md:justify-normal">
-                <div className="w-[22rem] bg-amber-200 border-[1px] border-slate-300 p-10 flex flex-col gap-2 items-center">
-                    <div className="font-grandista text-[2.5rem] box-border">
-                        Instagram
-                    </div>
-
-                    <div className="my-2 text-lg text-center text-slate-600">
-                        Welcome! Sign up to see what your friends are up to
-                    </div>
-
-                    <CustomTextInput
-                        type="text"
-                        value={username}
-                        setValue={setUsername}
-                        label="Username"
-                    />
-                    <CustomTextInput
-                        type="text"
-                        value={email}
-                        setValue={setEmail}
-                        label="Email"
-                    />
-                    <CustomTextInput
-                        type="text"
-                        value={confirmEmail}
-                        setValue={setConfirmEmail}
-                        label="Confirm email"
-                    />
-                    <CustomTextInput
-                        type="text"
-                        value={password}
-                        setValue={setPassword}
-                        label="Password"
-                    />
-                    <CustomTextInput
-                        type="text"
-                        value={confirmPassword}
-                        setValue={setConfirmPassword}
-                        label="Confirm password"
-                    />
-
-                    {error ? (
-                        <div className="text-red-500 text-sm text-center">
-                            {error}
+                <div className="bg-blue-400 h-full aspect-[1024/1700] grid place-content-center">
+                    <div className="w-[22rem] bg-amber-200 border-[1px] border-slate-300 p-10 flex flex-col gap-2 items-center">
+                        <div className="font-grandista text-[2.5rem] box-border">
+                            Instagram
                         </div>
-                    ) : null}
-
-                    <button
-                        className={`text-white  py-2 mt-2 text-bold w-full rounded-md ${
-                            isLoading
-                                ? "bg-button-disabled"
-                                : "bg-button hover:bg-button-hovered"
-                        } transition-all`}
-                        onClick={register}
-                        disabled={isLoading}>
-                        {isLoading ? "Loading..." : "Sign up"}
-                    </button>
-
-                    <div className="flex items-center justify-center w-full">
-                        <div className="h-[1px] bg-slate-300 flex-1 w-full" />
-                        <div className="px-4 text-slate-400"> Or </div>
-                        <div className="h-[1px] bg-slate-300 flex-1 w-full" />
+                        <div className="my-2 text-lg text-center text-slate-600">
+                            Welcome! Sign up to see what your friends are up to
+                        </div>
+                        <CustomTextInput
+                            type="text"
+                            value={username}
+                            setValue={setUsername}
+                            label="Username"
+                        />
+                        <CustomTextInput
+                            type="text"
+                            value={email}
+                            setValue={setEmail}
+                            label="Email"
+                        />
+                        <CustomTextInput
+                            type="text"
+                            value={confirmEmail}
+                            setValue={setConfirmEmail}
+                            label="Confirm email"
+                        />
+                        <CustomTextInput
+                            type="text"
+                            value={password}
+                            setValue={setPassword}
+                            label="Password"
+                        />
+                        <CustomTextInput
+                            type="text"
+                            value={confirmPassword}
+                            setValue={setConfirmPassword}
+                            label="Confirm password"
+                        />
+                        {error ? (
+                            <div className="text-red-500 text-sm text-center">
+                                {error}
+                            </div>
+                        ) : null}
+                        <button
+                            className={`text-white  py-2 mt-2 text-bold w-full rounded-md ${
+                                isLoading
+                                    ? "bg-button-disabled"
+                                    : "bg-button hover:bg-button-hovered"
+                            } transition-all`}
+                            onClick={register}
+                            disabled={isLoading}>
+                            {isLoading ? "Loading..." : "Sign up"}
+                        </button>
+                        <div className="flex items-center justify-center w-full">
+                            <div className="h-[1px] bg-slate-300 flex-1 w-full" />
+                            <div className="px-4 text-slate-400"> Or </div>
+                            <div className="h-[1px] bg-slate-300 flex-1 w-full" />
+                        </div>
+                        <button
+                            className="flex items-center justify-center w-full gap-1 py-2 text-white transition-all rounded-md text-bold bg-button hover:bg-button-hovered"
+                            onClick={() => signIn("google")}>
+                            <AiOutlineGoogle className="text-lg" />{" "}
+                            <span>Sign up with Google</span>
+                        </button>
                     </div>
-
-                    <button
-                        className="flex items-center justify-center w-full gap-1 py-2 text-white transition-all rounded-md text-bold bg-button hover:bg-button-hovered"
-                        onClick={() => signIn("google")}>
-                        <AiOutlineGoogle className="text-lg" />{" "}
-                        <span>Sign up with Google</span>
-                    </button>
                 </div>
             </div>
         </div>
