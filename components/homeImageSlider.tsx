@@ -11,8 +11,10 @@ export default function HomeImageSlider() {
     }, 5000);
 
     useEffect(() => {
-        return () => clearInterval(animationRef.current);
-    }, []);
+        const ref = animationRef.current;
+
+        return () => clearInterval(ref);
+    }, [animationRef]);
 
     return (
         <div className="h-full bg-emerald-300 aspect-[1024/1700] relative">
