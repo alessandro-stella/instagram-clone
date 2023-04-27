@@ -26,12 +26,12 @@ export default function CustomTextInput({
 
     return (
         <div
-            className={`w-full relative h-12 bg-white border-[1px] hover:cursor-text rounded-md transition-all ${
+            className={`w-full relative h-12 bg-slate-100 border-[1px] hover:cursor-text rounded-md transition-all ${
                 isFocused ? "border-slate-500" : "border-slate-300"
             }`}
             onClick={handleClick}>
             <div
-                className={`w-full absolute px-2 text-slate-300 flex items-center pointer-events-none transition-all ${
+                className={`w-full absolute px-2 text-slate-400 flex items-center pointer-events-none transition-all ${
                     value != "" ? "h-1/2 text-xs" : "h-full text-base"
                 }`}>
                 {label}

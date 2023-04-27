@@ -17,14 +17,14 @@ export default function HomeImageSlider() {
     }, [animationRef]);
 
     return (
-        <div className="h-full bg-emerald-300 aspect-[1024/1700] relative">
+        <div className="h-full aspect-[1024/1700] relative">
             <Image src="/Background.png?" alt="Background" fill />
 
             {imageRefs.map((ref, i) => (
                 <Image
                     key={i}
                     ref={ref}
-                    src={`/Samsung${i + 1}.png`}
+                    src={`/Samsung${i + 1}.png?`}
                     alt="Screenshots"
                     fill
                     style={{ opacity: index == i ? 1 : 0 }}
