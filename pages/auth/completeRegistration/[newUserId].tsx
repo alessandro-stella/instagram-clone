@@ -1,4 +1,5 @@
 import CustomTextInput from "@/components/customTextInput";
+import HomeImageSlider from "@/components/homeImageSlider";
 import { dbConnection } from "@/database/dbConnection";
 import TempUser from "@/database/models/tempUserModel";
 import { passwordRegex, usernameRegex } from "@/utils/regex";
@@ -79,21 +80,35 @@ export default function CompleteRegistration({ email, newUserId }: PageProps) {
             }),
         }).then((res) => res.json());
 
-        console.log(res);
+        if (res) {
+            if (res.ok) {
+                router.push("/");
 
-        if (res.success) {
-            router.push("/");
+                return;
+            }
+
+            if (res.error) {
+                setError(res.error);
+            }
         }
 
         setIsLoading(false);
     };
 
     return (
-        <>
-            {!isLoading ? (
-                <div className="flex flex-col gap-2 text-2xl">
-                    <div>Complete registration</div>
-
+        <div className="min-h-screen h-fit grid place-content-center ">
+            <div className="flex items-center justify-center gap-6 py-12">
+                <div className="h-[36rem] w-fit hidden md:inline-block">
+                    <HomeImageSlider />
+                </div>
+                <div className="w-[22rem] border-[1px] border-slate-300 p-10 flex flex-col gap-2 items-center">
+                    <div className="font-grandista text-[2.5rem] box-border">
+                        Instagram
+                    </div>
+                    <div className="text-lg text-slate-600 text-center my-2">
+                        Just a few steps and your account will be set
+                        successfully
+                    </div>
                     <CustomTextInput
                         label="Username"
                         type="text"
@@ -114,20 +129,24 @@ export default function CompleteRegistration({ email, newUserId }: PageProps) {
                         value={confirmPassword}
                         setValue={setConfirmPassword}
                     />
-
-                    <button onClick={handleConfirm}>
-                        Complete registration
+                    {error ? (
+                        <div className="text-red-500 text-sm text-center">
+                            {error}
+                        </div>
+                    ) : null}
+                    <button
+                        className={`text-white py-2 mt-2 text-bold w-full rounded-md ${
+                            isLoading
+                                ? "bg-button-disabled"
+                                : "bg-button hover:bg-button-hovered"
+                        } transition-all`}
+                        onClick={handleConfirm}
+                        disabled={isLoading}>
+                        {isLoading ? "Loading..." : "Complete registration"}
                     </button>
-
-                    <div>
-                        You have about 3 minutes to complete this step, or else
-                        you&apos;ll have to register again
-                    </div>
                 </div>
-            ) : (
-                <div>loading</div>
-            )}
-        </>
+            </div>
+        </div>
     );
 }
 
