@@ -1,5 +1,5 @@
 import { dbConnection } from "@/database/dbConnection";
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import url from "@/utils/url";
@@ -9,7 +9,7 @@ import TempUser from "@/database/models/tempUserModel";
 const GOOGLE_CLIENT_ID: string = process.env.GOOGLE_CLIENT_ID as string;
 const GOOGLE_CLIENT_SECRET: string = process.env.GOOGLE_CLIENT_SECRET as string;
 
-export default NextAuth({
+export const nextAuthOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
             name: "Credentials",
@@ -47,7 +47,8 @@ export default NextAuth({
 
                 return {
                     dbUser: true,
-                    id: user._id,
+                    id: user._id.toString(),
+                    profilePic: user.profilePic,
                     username: user.username,
                     followed: user.followed,
                 };
@@ -90,7 +91,7 @@ export default NextAuth({
             });
 
             user = {
-                id: dbUser._id,
+                id: dbUser._id.toString(),
                 username: dbUser.username,
                 followed: dbUser.followed,
             };
@@ -129,4 +130,6 @@ export default NextAuth({
             return true;
         },
     },
-});
+};
+
+export default NextAuth(nextAuthOptions);

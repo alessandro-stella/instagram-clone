@@ -32,7 +32,7 @@ export default function HomeImageSlider() {
                 />
             ))}
 
-            <Image src="/PhoneFrames.png" alt="Phone Frames" fill />
+            <Image src="/PhoneFrames.png" alt="Phone Frames" fill priority />
         </div>
     );
 }

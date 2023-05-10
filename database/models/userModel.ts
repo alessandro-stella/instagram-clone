@@ -24,15 +24,16 @@ const userSchema = new Schema(
             type: String,
             unique: true,
             required: [true, "Email is required"],
-            match: [
-                emailRegex,
-                "Invalid email address",
-            ],
+            match: [emailRegex, "Invalid email address"],
         },
         password: {
             type: String,
             required: [true, "Password is required"],
             select: false,
+        },
+        profilePic: {
+            type: String,
+            default: "",
         },
         bio: {
             type: String,

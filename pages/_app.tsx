@@ -3,6 +3,7 @@ import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import localFont from "next/font/local";
 import Head from "next/head";
+import NextNProgress from "nextjs-progressbar";
 
 const Segoe = localFont({
     src: [
@@ -42,6 +43,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 <title>Instagram</title>
             </Head>
             <main className={Segoe.className}>
+                <NextNProgress />
                 <Component {...pageProps} />
             </main>
         </SessionProvider>
